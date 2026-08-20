@@ -58,6 +58,7 @@ import { resolveBaseURL, withTimeout, BraveSearchProvider } from "../lib/index.j
 const braveOptions = (overrides = {}) => ({
   apiKey: undefined,
   envKey: "",
+  hasCredentialResolver: false,
   storeState: { current: false },
   ...overrides
 });
@@ -75,6 +76,11 @@ describe("BraveSearchProvider.available", () => {
 
   it("returns true with an environment key", () => {
     const p = new BraveSearchProvider(() => braveOptions({ envKey: "BSA-key" }), { current: false });
+    expect(p.available()).toBe(true);
+  });
+
+  it("returns true when a credential resolver is present before its async probe settles", () => {
+    const p = new BraveSearchProvider(() => braveOptions({ hasCredentialResolver: true }), { current: false });
     expect(p.available()).toBe(true);
   });
 

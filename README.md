@@ -23,7 +23,7 @@ A [Brave Search](https://api.search.brave.com)-backed search provider for the [D
 dsh plugin --profile web add dsh-web-search-brave
 ```
 
-Set your API key:
+Set your API key in DSH's credential store (recommended) or export it in the environment that starts `dsh web`:
 
 ```yaml
 # ~/.dsh/.credentials.yaml
