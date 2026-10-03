@@ -11,6 +11,8 @@
 
 基于 [Brave Search](https://api.search.brave.com) 的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 搜索 Provider，让内置的 `web_search` 工具走 Brave 搜索 Web API（`ctx.web` 能力接缝）。
 
+**DSH 兼容性：** 已按 `0.2.0-rc.2` 验证。
+
 ## 特性
 
 - **干净的摘要**：`text_decorations` 默认关闭，避免摘要中出现 `<b>` 高亮标记。

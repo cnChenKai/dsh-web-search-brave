@@ -11,6 +11,8 @@
 
 A [Brave Search](https://api.search.brave.com)-backed search provider for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) web capability seam (`ctx.web`): it makes the built-in `web_search` tool run on Brave's Search Web API instead of the shipped DeepSeek route.
 
+**DSH compatibility:** validated with `0.2.0-rc.2`.
+
 ## Features
 
 - **Clean snippets** - `text_decorations` defaults to false so snippets stay free of `<b>` highlight markers.
