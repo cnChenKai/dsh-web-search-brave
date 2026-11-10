@@ -11,7 +11,7 @@
 
 A [Brave Search](https://api.search.brave.com)-backed search provider for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) web capability seam (`ctx.web`): it makes the built-in `web_search` tool run on Brave's Search Web API instead of the shipped DeepSeek route.
 
-**DSH compatibility:** tested locally with `0.2.2-rc.1`. This checkout is version `0.2.5` and is **not published**; npm's latest published version is `0.2.4` and does not contain these local compatibility changes.
+**DSH compatibility:** version `0.2.5` has been tested locally with `0.2.2-rc.1`.
 
 ## Features
 
@@ -21,15 +21,12 @@ A [Brave Search](https://api.search.brave.com)-backed search provider for the [D
 
 ## Install
 
-From this checkout, pack the unpublished local source and install the resulting tarball into the DSH profile (the absolute path is important because DSH runs pnpm inside the profile directory):
+Install the npm package into the target DSH profile (replace `web` if needed):
 
 ```sh
-npm pack
-TARBALL="$PWD/dsh-web-search-brave-0.2.5.tgz"
-dsh plugin --profile web add "$TARBALL"
+dsh plugin --profile web add dsh-web-search-brave@0.2.5
 ```
 
-Run these commands in the repository root. Keep the tarball at that path while the profile uses the file dependency. Installing by package name instead fetches the older published npm release, not this checkout.
 
 Set your API key through the credentials service, or export `BRAVE_API_KEY` in the environment that starts `dsh`. The current credential file format uses a `refs` mapping; preserve any existing entries if editing it directly:
 
