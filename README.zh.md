@@ -11,7 +11,7 @@
 
 基于 [Brave Search](https://api.search.brave.com) 的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 搜索 Provider，让内置的 `web_search` 工具走 Brave 搜索 Web API（`ctx.web` 能力接缝）。
 
-**DSH 兼容性：** 已按 `0.2.0-rc.2` 验证。
+**DSH 兼容性：** 已在本地使用 `0.2.2-rc.1` 测试。本仓库版本为 `0.2.5`，**尚未发布**；npm 当前最新已发布版本为 `0.2.4`，不包含本地兼容性修改。
 
 ## 特性
 
@@ -21,26 +21,37 @@
 
 ## 安装
 
+在本地仓库根目录打包尚未发布的源码，再将生成的 tarball 安装到 DSH profile（必须使用绝对路径，因为 DSH 在 profile 目录中运行 pnpm）：
+
 ```sh
-dsh plugin --profile web add dsh-web-search-brave
+npm pack
+TARBALL="$PWD/dsh-web-search-brave-0.2.5.tgz"
+dsh plugin --profile web add "$TARBALL"
 ```
 
-设置 API key：
+profile 使用该文件依赖期间，请保留此路径的 tarball。使用包名安装会从 npm 获取旧的已发布版本，而不是本地代码。
+
+通过 credentials 服务保存 API key，或在启动 `dsh` 的环境中导出 `BRAVE_API_KEY`。当前凭据文件使用 `refs` 映射；手动编辑时保留已有条目：
 
 ```yaml
-# ~/.dsh/.credentials.yaml
-BRAVE_API_KEY: BSA...
+# $DSH_HOME/.credentials.yaml（默认 ~/.dsh/.credentials.yaml）
+version: 1
+refs:
+  BRAVE_API_KEY: <your-key>
+records: {}
 ```
 
-切换 Provider（bundle 补丁会自动完成；手动切换方式）：
+Bundle 只挂载 provider，**不会**自动选中它。默认 web profile 固定使用 `deepseek-official`；请在 profile 补丁中选择 Brave，并保留原先使用的 fetch provider（默认值为 `http`）：
 
 ```yaml
-# 你的 profile 的 cordis.patch.yml
+# $DSH_HOME/profiles/web/cordis.patch.yml
 - id: web
-  name: '@deepseek-ai/dsh-web'
   config:
     searchProvider: brave
+    fetchProvider: http
 ```
+
+补丁会替换整个 `web` 配置，请同时保留其他需要的设置。修改 profile 补丁后重启 DSH。
 
 ## License
 

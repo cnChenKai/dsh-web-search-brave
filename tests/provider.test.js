@@ -63,6 +63,47 @@ const braveOptions = (overrides = {}) => ({
   ...overrides
 });
 
+describe("BraveSearchProvider.ready", () => {
+  it("reports missing credentials without making a network request", async () => {
+    const p = new BraveSearchProvider(() => braveOptions({
+      hasCredentialResolver: true,
+      resolveApiKey: async () => undefined
+    }), { current: false });
+    expect(await p.ready("any-model")).toBe(false);
+  });
+
+  it("reflects credential changes on successive readiness checks", async () => {
+    let key;
+    const p = new BraveSearchProvider(() => braveOptions({
+      hasCredentialResolver: true,
+      resolveApiKey: async () => key
+    }), { current: false });
+    expect(await p.ready()).toBe(false);
+    key = "synthetic-key";
+    expect(await p.ready()).toBe(true);
+    key = undefined;
+    expect(await p.ready()).toBe(false);
+  });
+
+  it("reports a literal key ready without using the resolver", async () => {
+    const p = new BraveSearchProvider(() => braveOptions({
+      apiKey: "synthetic-key",
+      resolveApiKey: async () => { throw new Error("must not resolve"); }
+    }), { current: false });
+    expect(await p.ready()).toBe(true);
+  });
+
+  it("propagates credential resolver failures instead of treating them as missing keys", async () => {
+    const p = new BraveSearchProvider(() => braveOptions({
+      resolveApiKey: async () => { throw new Error("credential store unavailable"); }
+    }), { current: false });
+    await expect(p.ready()).rejects.toMatchObject({
+      code: "WEB_PROVIDER_ERROR",
+      message: expect.stringContaining("credential store unavailable")
+    });
+  });
+});
+
 describe("BraveSearchProvider.available", () => {
   it("returns false when no key is configured anywhere", () => {
     const p = new BraveSearchProvider(() => braveOptions(), { current: false });
